@@ -38,7 +38,7 @@ fi
 
 IP=$(ifconfig $current_device | awk '/inet6 .*autoconf/{print $2}')
 PREFIX_LEN=$(ifconfig $current_device | awk '/inet6 .*autoconf/{print $4}')
-router_with_suffix=$(netstat -nr | grep -i default | grep -i %$current_device | awk '{print $2}')
+router_with_suffix=$(netstat -nr -f inet6 | grep -i default | grep -i %$current_device | awk '{print $2}')
 router=${router_with_suffix%"%$current_device"}
 
 if [ -n "$IP" ]; then

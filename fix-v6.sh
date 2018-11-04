@@ -38,14 +38,20 @@ fi
 
 IP=$(ifconfig $current_device | awk '/inet6 .*autoconf/{print $2}')
 PREFIX_LEN=$(ifconfig $current_device | awk '/inet6 .*autoconf/{print $4}')
-router_with_suffix=$(netstat -nr -f inet6 | grep -i default | grep -i %$current_device | awk '{print $2}')
-router=${router_with_suffix%"%$current_device"}
-
+local_router_with_suffix=$(netstat -nr -f inet6 | grep -i default | grep -i %$current_device | awk '{print $2}')
+local_router=${local_router_with_suffix%"%$current_device"}
+ 
 if [ -n "$IP" ]; then
-    echo "IP:        $IP/$PREFIX_LEN"
-    echo "Router     $router"
+    echo "IP:              $IP/$PREFIX_LEN"
+    echo "LocalRouter:     $local_router"
 
-    echo "Set static IP..."
+    echo "Set static IP with local router..."
+    networksetup -setv6manual "$current_service" $IP $PREFIX_LEN $local_router
+    sleep 3;
+    router=$(traceroute6 -m 1 2001:: 2>/dev/null | awk '{print $2}')
+    echo "PublicRouter:    $router"
+    echo "Set static IP with public router..."
+    networksetup -setv6automatic "$current_service"
     networksetup -setv6manual "$current_service" $IP $PREFIX_LEN $router
     echo "Done."
 else

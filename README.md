@@ -14,6 +14,10 @@
 ./fix-v6.sh
 ```
 
+由于macOS默认开启了IPv6 Privacy地址，这会导致你的网卡接口上存在多个IPv6地址，导致本脚本执行出错。建议关闭。
+
+关闭方法：`sudo echo 'net.inet6.ip6.use_tempaddr=0' > /etc/sysctl.conf`，然后重新启动。
+
 ## 原理
 
 1. 重置当前网络接口的IPv6地址获取方法为自动

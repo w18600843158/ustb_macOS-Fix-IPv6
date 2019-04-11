@@ -48,7 +48,7 @@ if [ -n "$IP" ]; then
     echo "Set static IP with local router..."
     networksetup -setv6manual "$current_service" $IP $PREFIX_LEN $local_router
     sleep 3;
-    router=$(traceroute6 -m 1 2001:: 2>/dev/null | awk '{print $2}')
+    router=$(traceroute6 -n -m 1 2001:: 2>/dev/null | awk '{print $2}')
     echo "PublicRouter:    $router"
     echo "Set static IP with public router..."
     networksetup -setv6automatic "$current_service"
